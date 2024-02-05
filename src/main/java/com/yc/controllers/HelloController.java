@@ -1,17 +1,20 @@
 package com.yc.controllers;
 
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-//@CrossOrigin("*")
+@CrossOrigin("*")
 public class HelloController {
 
     @GetMapping("/hello")
     public String sayHello(){
-        return "Hello";
+        var authUser = SecurityContextHolder.getContext().getAuthentication();
+
+        return "Hello "+ authUser.getName();
     }
 
     @GetMapping("/")
@@ -20,12 +23,18 @@ public class HelloController {
     }
 
     @GetMapping("/admin")
-    public String dashboard(){
+    public String adminPanel(){
         return "Admin panel";
     }
 
+    @GetMapping("/dashboard")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String dashboard(){
+        return "Dashboard";
+    }
+
     @GetMapping("/user")
-    public String panel(){
+    public String userPanel(){
         return "user panel";
     }
 
